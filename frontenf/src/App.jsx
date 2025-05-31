@@ -6,6 +6,8 @@ import Register from "./Components/Register";
 import Navbar from "./Components/Navbar";
 import ScheduleMeeting from "./Components/ScheduleMeeting";
 import { AuthProvider } from "./context/AuthContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <>
@@ -17,6 +19,7 @@ function App() {
           <Route path="/schedule-meeting" element={<ScheduleMeeting />} />
         </Routes>
       </AuthProvider>
+       <ToastContainer position="top-right" autoClose={1000} />
     </>
   );
 }

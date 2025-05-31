@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    console.log(user);
+    console.log(user.id);
   }, [user]);
   return (
     <AuthContext.Provider value={{ user, setUser }}>
