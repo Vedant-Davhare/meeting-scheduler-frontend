@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import Logo from "../assets/Logo.webp";
+
 
 function Navbar() {
   const { user, setUser } = useContext(AuthContext);
@@ -15,8 +17,11 @@ function Navbar() {
   };
 
   return (
-    <nav className="flex justify-between bg-white z-10 items-center fixed w-full h-13 p-3 shadow-lg">
-      <Link to={"/home"}>Logo</Link>
+   <nav className="flex justify-between bg-white z-50 items-center fixed w-full h-13 p-3 shadow-lg">
+  <Link to="/home">
+    <img src={Logo} alt="Logo" className="h-10 w-auto object-contain" />
+  </Link>
+
 
       <menu className="flex items-center justify-evenly">
         {(user.role === "LEADERSHIP" || user.role === "TEAMLEAD") && (
