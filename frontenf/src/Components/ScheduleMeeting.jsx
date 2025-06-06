@@ -2,8 +2,10 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; // Toast import
-import "react-toastify/dist/ReactToastify.css"; // Toast CSS
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import classroomBg from "../assets/classroom.webp";
 
 const ScheduleMeeting = () => {
   const { user } = useContext(AuthContext);
@@ -80,95 +82,116 @@ const ScheduleMeeting = () => {
         withCredentials: true,
       })
       .then((res) => {
-        toast.success(" Meeting Scheduled Successfully!");
+        toast.success("✅ Meeting Scheduled Successfully!");
         navigate("/home");
       })
       .catch((err) => {
         console.error("Error:", err.response?.data || err.message);
-        toast.error(err.response?.data?.message || " Failed to schedule meeting");
+        toast.error(err.response?.data?.message || "❌ Failed to schedule meeting");
       });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-14">
-      <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">
+    <div
+      className="relative min-h-screen flex items-center justify-center p-10 pt-16 bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${classroomBg})` }}>
+
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-sm z-0" />
+
+      <div className="relative z-10 bg-white/70 p-10 rounded-xl shadow-2xl w-full max-w-2xl">
+        <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: "#091c51" }}>
           Schedule a Meeting
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block mb-1 font-medium">Meeting Title</label>
+            <label className="block mb-1 font-semibold" style={{ color: "#2e2e2e" }}>
+              Meeting Title
+            </label>
             <input
               type="text"
               name="meetingTitle"
               value={formData.meetingTitle}
               onChange={handleChange}
               required
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              style={{ color: "#010101" }}
+              className="w-full bg-[#91C81F] focus:border border-gray-500 text-[#010101] rounded-lg px-4 py-2 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">
+            <label className="block mb-1 font-semibold" style={{ color: "#2e2e2e" }}>
               Meeting Description
             </label>
             <textarea
               name="meetingDescription"
               value={formData.meetingDescription}
               onChange={handleChange}
-              required
               rows="3"
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              required
+              style={{ color: "#010101" }}
+              className="w-full bg-[#91C81F] focus:border border-gray-500 text-[#010101] rounded-lg px-4 py-2 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">Date</label>
+            <label className="block mb-1 font-semibold" style={{ color: "#2e2e2e" }}>
+              Date
+            </label>
             <input
               type="date"
               name="date"
               value={formData.date}
               onChange={handleChange}
               required
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              style={{ color: "#010101" }}
+              className="w-full bg-[#91C81F] focus:border border-gray-500 text-[#010101] rounded-lg px-4 py-2 focus:outline-none"
             />
           </div>
 
           <div className="flex gap-4">
             <div className="flex-1">
-              <label className="block mb-1 font-medium">Start Time</label>
+              <label className="block mb-1 font-semibold" style={{ color: "#2e2e2e" }}>
+                Start Time
+              </label>
               <input
                 type="time"
                 name="startTime"
                 value={formData.startTime}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 rounded px-3 py-2"
+                style={{ color: "#010101" }}
+              className="w-full bg-[#91C81F] focus:border border-gray-500 text-[#010101] rounded-lg px-4 py-2 focus:outline-none"
               />
             </div>
 
             <div className="flex-1">
-              <label className="block mb-1 font-medium">End Time</label>
+              <label className="block mb-1 font-semibold" style={{ color: "#2e2e2e" }}>
+                End Time
+              </label>
               <input
                 type="time"
                 name="endTime"
                 value={formData.endTime}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 rounded px-3 py-2"
+                style={{ color: "#010101" }}
+              className="w-full bg-[#91C81F] focus:border border-gray-500 text-[#010101] rounded-lg px-4 py-2 focus:outline-none"
               />
             </div>
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">Venue</label>
+            <label className="block mb-1 font-semibold" style={{ color: "#2e2e2e" }}>
+              Venue
+            </label>
             <select
               name="roomId"
               value={formData.roomId}
               onChange={handleChange}
               required
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              style={{ color: "#010101" }}
+              className="w-full bg-[#91C81F] focus:border border-gray-500 text-[#010101] rounded-lg px-4 py-2 focus:outline-none"
             >
               <option value="">Select</option>
               {rooms.map((room) => (
@@ -180,13 +203,16 @@ const ScheduleMeeting = () => {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">Invite People</label>
+            <label className="block mb-1 font-semibold" style={{ color: "#2e2e2e" }}>
+              Invite People
+            </label>
             <select
               name="invitedPeople"
               multiple
               value={formData.invitedPeople}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 h-32"
+              style={{ color: "#010101" }}
+              className="w-full bg-[#91C81F] focus:border border-gray-500 text-[#010101] rounded-lg px-4 py-2 focus:outline-none"
             >
               {users.map((user) => (
                 <option key={user.id} value={user.id}>
@@ -194,14 +220,23 @@ const ScheduleMeeting = () => {
                 </option>
               ))}
             </select>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-sm text-gray-500 mt-1">
               Hold Ctrl (Cmd on Mac) to select multiple people.
             </p>
           </div>
 
           <button
             type="submit"
-            className="w-full cursor-pointer bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200"
+            className="schedule-btn w-full py-3 rounded-lg text-lg font-medium transition duration-200"
+            style={{ backgroundColor: "#d0ef31", color: "#2e2e2e" }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = "#FF6B6B";
+              e.currentTarget.style.color = "#fff";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = "#d0ef31";
+              e.currentTarget.style.color = "#2e2e2e";
+            }}
           >
             Schedule Meeting
           </button>
