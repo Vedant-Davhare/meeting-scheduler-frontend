@@ -8,6 +8,7 @@ import ScheduleMeeting from "./Components/ScheduleMeeting";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import UpcomingMeetings from "./Components/UpcomingMeetings";
 function App() {
   return (
     <>
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/" element={<Login />} />
+          <Route path="/upcomingmeetings" element={<UpcomingMeetings />} />
           <Route path="/schedule-meeting" element={<ScheduleMeeting />} />
         </Routes>
       </AuthProvider>

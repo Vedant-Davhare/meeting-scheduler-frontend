@@ -9,7 +9,7 @@ import BackgroundImg from "../assets/classroom.webp";
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
-  const { setUser } = useContext(AuthContext);
+  const { setUser, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -32,7 +32,12 @@ const Login = () => {
         toast.success(res?.data?.message);
         localStorage.setItem("user", res.data.data.name);
         localStorage.setItem("islogin", res?.data?.success);
+
         setUser(res.data.data);
+        console.log(res.data.data);
+
+        localStorage.setItem("userId", res.data.data.id);
+        localStorage.setItem("Role", res.data.data.role);
         navigate("/home");
       }
     } catch (error) {
@@ -54,7 +59,6 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="bg-gradient-to-br from-[#9AB300] to-[#BCEB11] p-10 rounded-3xl shadow-2xl w-full max-w-lg min-h-[500px] transition-all duration-300"
       >
-
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <img
@@ -97,9 +101,7 @@ const Login = () => {
         </button>
 
         {message && (
-          <p className="mt-4 text-center text-red-600 font-medium">
-            {message}
-          </p>
+          <p className="mt-4 text-center text-red-600 font-medium">{message}</p>
         )}
       </form>
     </div>
