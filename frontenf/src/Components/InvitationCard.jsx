@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 
 const InvitationCard = ({ meeting, onClick }) => {
-  const [hide, setHide] = useState(false);
+  const [hide, setHide] = useState(false);f
 
   const handleResponse = (status) => {
     onClick({
