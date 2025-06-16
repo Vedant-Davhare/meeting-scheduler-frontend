@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion, AnimatePresence } from "framer-motion";
-
 import classroomBg from "../assets/classroom.webp";
 
 const ScheduleMeeting = () => {
@@ -27,26 +26,32 @@ const ScheduleMeeting = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/users/all", {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      })
-      .then((res) => {
-        const allUsers = res?.data?.data || [];
-        const filtered = allUsers.filter((u) => u.id !== user?.id);
-        setUsers(filtered);
-      })
-      .catch((err) => console.error("User fetch error:", err));
+    const fetchData = async () => {
+      try {
+        const [usersRes, roomsRes] = await Promise.all([
+          axios.get("http://localhost:8080/api/users/all", {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }),
+          axios.get("http://localhost:8080/api/rooms", {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }),
+        ]);
 
-    axios
-      .get("http://localhost:8080/api/rooms", {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      })
-      .then((res) => setRooms(res?.data?.data || []))
-      .catch((err) => console.error("Room fetch error:", err));
-  }, []);
+        const allUsers = usersRes?.data?.data || [];
+        const filteredUsers = allUsers.filter((u) => u.id !== user?.id);
+        setUsers(filteredUsers);
+
+        setRooms(roomsRes?.data?.data || []);
+      } catch (err) {
+        console.error("Error fetching users or rooms:", err);
+        toast.error("Failed to load user or room data.");
+      }
+    };
+
+    fetchData();
+  }, [user?.id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,12 +71,11 @@ const ScheduleMeeting = () => {
     setSelectedUsers(users.map((u) => u.id));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const startString = `${formData.date}T${formData.startTime}:00`;
     const endString = `${formData.date}T${formData.endTime}:00`;
-
     const start = new Date(startString);
     const end = new Date(endString);
     const now = new Date();
@@ -94,25 +98,33 @@ const ScheduleMeeting = () => {
     const payload = {
       title: formData.meetingTitle,
       description: formData.meetingDescription,
-      startTime: startString, // local ISO string
+      startTime: startString,
       endTime: endString,
       roomId: parseInt(formData.roomId),
       attendeeIds: selectedUsers,
     };
 
-    axios
-      .post("http://localhost:8080/api/meetings/book", payload, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      })
-      .then(() => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/meetings/book",
+        payload,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200 || response.status === 201) {
         toast.success("Meeting Scheduled Successfully!");
         navigate("/home");
-      })
-      .catch((err) => {
-        console.error("Error scheduling:", err);
-        toast.error(err.response?.data?.message || "Failed to schedule meeting.");
-      });
+      } else {
+        console.warn("Unexpected response:", response);
+        toast.error("Unexpected server response.");
+      }
+    } catch (err) {
+      console.error("Error scheduling meeting:", err);
+      toast.error(err.response?.data?.message || "Failed to schedule meeting.");
+    }
   };
 
   return (
