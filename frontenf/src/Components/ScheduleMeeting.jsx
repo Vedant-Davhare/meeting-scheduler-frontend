@@ -24,6 +24,7 @@ const ScheduleMeeting = () => {
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [loading, setLoading] = useState(false); // Loader state
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,7 +43,6 @@ const ScheduleMeeting = () => {
         const allUsers = usersRes?.data?.data || [];
         const filteredUsers = allUsers.filter((u) => u.id !== user?.id);
         setUsers(filteredUsers);
-
         setRooms(roomsRes?.data?.data || []);
       } catch (err) {
         console.error("Error fetching users or rooms:", err);
@@ -73,6 +73,7 @@ const ScheduleMeeting = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const startString = `${formData.date}T${formData.startTime}:00`;
     const endString = `${formData.date}T${formData.endTime}:00`;
@@ -82,16 +83,19 @@ const ScheduleMeeting = () => {
 
     if (start < now) {
       toast.error("Start time cannot be in the past.");
+      setLoading(false);
       return;
     }
 
     if (end <= start) {
       toast.error("End time must be after start time.");
+      setLoading(false);
       return;
     }
 
     if (selectedUsers.length === 0) {
       toast.error("Please invite at least one person.");
+      setLoading(false);
       return;
     }
 
@@ -124,6 +128,8 @@ const ScheduleMeeting = () => {
     } catch (err) {
       console.error("Error scheduling meeting:", err);
       toast.error(err.response?.data?.message || "Failed to schedule meeting.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -222,9 +228,10 @@ const ScheduleMeeting = () => {
 
           <button
             type="submit"
-            className="w-full py-3 rounded-lg text-lg font-medium bg-blue-700 text-white hover:bg-blue-900"
+            disabled={loading}
+            className="w-full py-3 rounded-lg text-lg font-medium bg-blue-700 text-white hover:bg-blue-900 disabled:opacity-50"
           >
-            Schedule Meeting
+            {loading ? "Scheduling..." : "Schedule Meeting"}
           </button>
         </form>
       </div>
